@@ -1,4 +1,4 @@
-export const INITIAL_DATA = {
+export const DEFAULT_CONTENT = {
   hero: {
     kicker: "I'm",
     name: "Hogari Marai",
@@ -13,7 +13,6 @@ export const INITIAL_DATA = {
       ratingCount: "250+ reviews"
     },
     image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=85",
-    // We also support the local extracted figma cutout if preferred
     fallbackImage: "/assets/figma_hero_model.png"
   },
   intro: {
@@ -45,7 +44,7 @@ export const INITIAL_DATA = {
       }
     ]
   },
-  // The highlighted card marked in the Figma screenshot
+  // The highlighted card marked in the Figma specification
   quoteBox: {
     badge: "EDITORIAL STATEMENT",
     title: "Curated Aesthetics & Vision",
@@ -104,4 +103,3 @@ export const INITIAL_DATA = {
     ]
   }
 };
-

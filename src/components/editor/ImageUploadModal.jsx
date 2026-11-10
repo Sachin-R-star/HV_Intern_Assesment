@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { X, Upload, Link, Check, Sparkles } from 'lucide-react';
-import { IMAGE_PRESETS } from '../data/imagePresets';
+import { CURATED_PRESETS } from '../../constants/presetImages';
 
-export default function ImagePickerModal({ isOpen, onClose, onSelectImage, currentImage, title = "Change Image" }) {
+export default function ImageUploadModal({
+  isOpen,
+  onClose,
+  onSelectImage,
+  currentValue = '',
+  title = "Update Image Asset"
+}) {
   const [activeTab, setActiveTab] = useState('presets'); // 'presets' | 'upload' | 'url'
   const [customUrl, setCustomUrl] = useState('');
-  const [selectedPreset, setSelectedPreset] = useState(currentImage);
+  const [selectedPreset, setSelectedPreset] = useState(currentValue);
   const [uploadedBase64, setUploadedBase64] = useState(null);
 
   if (!isOpen) return null;
@@ -40,7 +46,7 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gold-50/50">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-gold-600 animate-spin-slow" />
+            <Sparkles className="w-5 h-5 text-gold-600" />
             <h3 className="text-lg font-serif font-bold text-gray-900">{title}</h3>
           </div>
           <button 
@@ -84,17 +90,17 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
             }`}
           >
             <Link className="w-4 h-4" />
-            Direct Image URL
+            Direct URL
           </button>
         </div>
 
-        {/* Tab Content */}
+        {/* Tab content */}
         <div className="p-6 overflow-y-auto flex-1">
           {activeTab === 'presets' && (
             <div>
-              <p className="text-xs text-gray-500 mb-3">Choose from high-fashion studio presets or the exact Figma cutouts:</p>
+              <p className="text-xs text-gray-500 mb-3">Select from studio photography presets or original Figma cutouts:</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {IMAGE_PRESETS.map((preset) => {
+                {CURATED_PRESETS.map((preset) => {
                   const isSelected = selectedPreset === preset.url;
                   return (
                     <div
@@ -111,7 +117,7 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
                         alt={preset.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
-                          e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
                         }}
                       />
                       <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-white">
@@ -142,7 +148,7 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
                 <div className="w-14 h-14 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center mb-3 shadow-inner">
                   <Upload className="w-6 h-6" />
                 </div>
-                <span className="text-sm font-semibold text-gray-800">Click to upload or drag & drop</span>
+                <span className="text-sm font-semibold text-gray-800">Select file from device or drag & drop</span>
                 <span className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP, or SVG up to 10MB</span>
               </label>
 
@@ -154,8 +160,8 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
                     className="w-16 h-16 rounded-lg object-cover border border-gold-300"
                   />
                   <div>
-                    <p className="text-xs font-semibold text-gray-800">Image successfully loaded</p>
-                    <p className="text-[11px] text-gray-500">Ready to replace current image</p>
+                    <p className="text-xs font-semibold text-gray-800">File loaded successfully</p>
+                    <p className="text-[11px] text-gray-500">Ready to apply to page</p>
                   </div>
                 </div>
               )}
@@ -165,26 +171,24 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
           {activeTab === 'url' && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Paste Direct Image URL</label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    value={customUrl}
-                    onChange={(e) => setCustomUrl(e.target.value)}
-                    placeholder="https://images.unsplash.com/... or any web image link"
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500"
-                  />
-                </div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Image URL</label>
+                <input
+                  type="url"
+                  value={customUrl}
+                  onChange={(e) => setCustomUrl(e.target.value)}
+                  placeholder="https://images.unsplash.com/... or any hosted image"
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500"
+                />
               </div>
               {customUrl && (
                 <div className="mt-4 p-4 border border-gold-200 rounded-xl bg-gold-50/20">
-                  <p className="text-xs text-gray-600 mb-2">Live Preview:</p>
+                  <p className="text-xs text-gray-600 mb-2">Image Preview:</p>
                   <img
                     src={customUrl}
                     alt="URL preview"
                     className="w-32 h-32 rounded-lg object-cover border border-gold-300 shadow"
                     onError={(e) => {
-                      e.target.style.display = 'none';
+                      e.currentTarget.style.display = 'none';
                     }}
                   />
                 </div>
@@ -205,7 +209,7 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
             onClick={handleConfirm}
             className="px-6 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 shadow-md hover:shadow-gold-glow transition-all active:scale-95"
           >
-            Update Image
+            Apply Asset
           </button>
         </div>
 
@@ -213,4 +217,3 @@ export default function ImagePickerModal({ isOpen, onClose, onSelectImage, curre
     </div>
   );
 }
-

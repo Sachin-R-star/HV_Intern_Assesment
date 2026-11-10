@@ -3,41 +3,27 @@ import {
   X, Save, RotateCcw, Download, Upload, Plus, Trash2, Camera, 
   Sparkles, Layers, Type, Image as ImageIcon, MessageSquare, Check
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { triggerGoldConfetti } from '../../utils/helpers';
 
-export default function EditorDrawer({
+export default function CMSDrawer({
   isOpen,
   onClose,
   data,
   onUpdateFullData,
   onOpenImagePicker,
-  onReset
+  onReset,
+  onExport
 }) {
-  const [activeTab, setActiveTab] = useState('hero'); // 'hero' | 'intro' | 'quote' | 'gallery' | 'contact'
+  const [activeTab, setActiveTab] = useState('hero');
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    localStorage.setItem('hogari_portfolio_data', JSON.stringify(data));
+    localStorage.setItem('hogari_marai_landing_content_v1', JSON.stringify(data));
     setSaveSuccess(true);
-    confetti({
-      particleCount: 40,
-      spread: 60,
-      origin: { y: 0.5 },
-      colors: ['#d5a73e', '#e8c374', '#ffffff']
-    });
-    setTimeout(() => setSaveSuccess(false), 2500);
-  };
-
-  const handleExportJSON = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `hogari-marai-content-${new Date().toISOString().slice(0, 10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    triggerGoldConfetti(0.5);
+    setTimeout(() => setSaveSuccess(false), 2200);
   };
 
   const handleImportJSON = (e) => {
@@ -48,7 +34,7 @@ export default function EditorDrawer({
         try {
           const parsed = JSON.parse(event.target?.result);
           onUpdateFullData(parsed);
-          alert('Configuration imported successfully!');
+          triggerGoldConfetti(0.5);
         } catch (err) {
           alert('Invalid JSON file format.');
         }
@@ -65,37 +51,35 @@ export default function EditorDrawer({
       year: "2024",
       image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=85"
     };
-    const updated = {
+    onUpdateFullData({
       ...data,
       gallery: {
         ...data.gallery,
         items: [...data.gallery.items, newItem]
       }
-    };
-    onUpdateFullData(updated);
+    });
   };
 
   const handleRemoveGalleryItem = (index) => {
-    const updated = {
+    onUpdateFullData({
       ...data,
       gallery: {
         ...data.gallery,
         items: data.gallery.items.filter((_, idx) => idx !== index)
       }
-    };
-    onUpdateFullData(updated);
+    });
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl border-l border-gold-300/40 flex flex-col animate-slideLeft">
+    <aside className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl border-l border-gold-300/40 flex flex-col animate-slideLeft">
       
-      {/* Drawer Header */}
+      {/* Header */}
       <div className="px-6 py-4 bg-[#161413] text-white flex items-center justify-between border-b border-gold-500/30">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-gold-400" />
           <div>
-            <h3 className="font-serif font-bold text-base text-gold-200">Page CMS & Customizer</h3>
-            <p className="text-[11px] text-gray-400">Edit every text, image & layout block</p>
+            <h3 className="font-serif font-bold text-base text-gold-200">CMS & Content Control</h3>
+            <p className="text-[11px] text-gray-400">Edit every text, image & layout segment</p>
           </div>
         </div>
         <button
@@ -106,12 +90,12 @@ export default function EditorDrawer({
         </button>
       </div>
 
-      {/* Navigation Tabs */}
+      {/* Tabs */}
       <div className="flex border-b border-gray-100 bg-gray-50/70 px-4 pt-2 overflow-x-auto gap-1 text-xs">
         {[
           { id: 'hero', label: 'Hero', icon: Layers },
           { id: 'intro', label: 'Intro', icon: Type },
-          { id: 'quote', label: 'Marked Box', icon: Sparkles },
+          { id: 'quote', label: 'Marked Card', icon: Sparkles },
           { id: 'gallery', label: 'Gallery', icon: ImageIcon },
           { id: 'contact', label: 'Contact', icon: MessageSquare },
         ].map((tab) => {
@@ -133,13 +117,13 @@ export default function EditorDrawer({
         })}
       </div>
 
-      {/* Drawer Body */}
+      {/* Body */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6 text-sm">
         
         {/* HERO TAB */}
         {activeTab === 'hero' && (
           <div className="space-y-4">
-            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">Hero Section Settings</h4>
+            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">Hero Section</h4>
             
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Kicker</label>
@@ -157,7 +141,7 @@ export default function EditorDrawer({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Main Model Name</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Model Name</label>
               <input
                 type="text"
                 value={data.hero.name}
@@ -188,7 +172,7 @@ export default function EditorDrawer({
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Follower Count</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Followers Count</label>
                 <input
                   type="text"
                   value={data.hero.stats.count}
@@ -225,7 +209,7 @@ export default function EditorDrawer({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Hero Photo (Pillar Mask)</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Hero Model Photo</label>
               <div className="flex items-center gap-3 p-3 border border-gold-200 rounded-xl bg-gold-50/20">
                 <img
                   src={data.hero.image}
@@ -233,7 +217,7 @@ export default function EditorDrawer({
                   className="w-12 h-16 object-cover rounded-lg border border-gold-300"
                 />
                 <button
-                  onClick={() => onOpenImagePicker('hero.image', data.hero.image)}
+                  onClick={() => onOpenImagePicker('hero.image', data.hero.image, 'Update Hero Photo')}
                   className="px-4 py-2 rounded-lg text-xs font-semibold bg-gold-500 text-white hover:bg-gold-600 shadow-sm flex items-center gap-1.5 transition-colors"
                 >
                   <Camera className="w-3.5 h-3.5" />
@@ -247,10 +231,10 @@ export default function EditorDrawer({
         {/* INTRO TAB */}
         {activeTab === 'intro' && (
           <div className="space-y-4">
-            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">My Intro Settings</h4>
+            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">My Intro</h4>
             
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Heading</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Section Title</label>
               <input
                 type="text"
                 value={data.intro.title}
@@ -280,7 +264,7 @@ export default function EditorDrawer({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Main Circular Avatar</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Main Circle Avatar</label>
               <div className="flex items-center gap-3 p-3 border border-gold-200 rounded-xl bg-gold-50/20">
                 <img
                   src={data.intro.mainImage}
@@ -288,7 +272,7 @@ export default function EditorDrawer({
                   className="w-14 h-14 rounded-full object-cover border-2 border-gold-400"
                 />
                 <button
-                  onClick={() => onOpenImagePicker('intro.mainImage', data.intro.mainImage)}
+                  onClick={() => onOpenImagePicker('intro.mainImage', data.intro.mainImage, 'Update Avatar')}
                   className="px-4 py-2 rounded-lg text-xs font-semibold bg-gold-500 text-white hover:bg-gold-600 shadow-sm flex items-center gap-1.5 transition-colors"
                 >
                   <Camera className="w-3.5 h-3.5" />
@@ -297,9 +281,8 @@ export default function EditorDrawer({
               </div>
             </div>
 
-            {/* Satellite Avatars */}
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-2">Floating Satellite Badges</label>
+              <label className="block text-xs font-medium text-gray-600 mb-2">Satellite Circular Badges</label>
               <div className="space-y-2">
                 {data.intro.satellites?.map((sat, idx) => (
                   <div key={sat.id || idx} className="flex items-center justify-between p-2.5 border rounded-lg bg-gray-50">
@@ -308,7 +291,7 @@ export default function EditorDrawer({
                       <span className="text-xs font-medium text-gray-700">{sat.label}</span>
                     </div>
                     <button
-                      onClick={() => onOpenImagePicker(`intro.satellites.${idx}.image`, sat.image)}
+                      onClick={() => onOpenImagePicker(`intro.satellites.${idx}.image`, sat.image, `Update ${sat.label}`)}
                       className="text-xs text-gold-700 hover:text-gold-900 font-medium"
                     >
                       Replace
@@ -324,14 +307,14 @@ export default function EditorDrawer({
         {activeTab === 'quote' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b pb-2">
-              <h4 className="font-serif font-bold text-gray-900 text-base">Marked Section (Figma Blue Box)</h4>
+              <h4 className="font-serif font-bold text-gray-900 text-base">Figma Marked Section</h4>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold">
                 Client Highlight
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Top Badge Label</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Badge</label>
               <input
                 type="text"
                 value={data.quoteBox.badge}
@@ -361,7 +344,7 @@ export default function EditorDrawer({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Editorial Statement / Content</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Editorial Quote Text</label>
               <textarea
                 rows={5}
                 value={data.quoteBox.text}
@@ -427,7 +410,6 @@ export default function EditorDrawer({
                         });
                       }}
                       className="w-full text-xs font-semibold px-2 py-1 bg-white border rounded mb-1"
-                      placeholder="Title"
                     />
                     <input
                       type="text"
@@ -441,12 +423,11 @@ export default function EditorDrawer({
                         });
                       }}
                       className="w-full text-[11px] text-gray-600 px-2 py-0.5 bg-white border rounded"
-                      placeholder="Category"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
                     <button
-                      onClick={() => onOpenImagePicker(`gallery.items.${idx}.image`, item.image)}
+                      onClick={() => onOpenImagePicker(`gallery.items.${idx}.image`, item.image, `Change ${item.title}`)}
                       className="p-1.5 rounded-lg bg-gold-100 hover:bg-gold-200 text-gold-800 transition-colors"
                       title="Change Photo"
                     >
@@ -469,7 +450,7 @@ export default function EditorDrawer({
         {/* CONTACT TAB */}
         {activeTab === 'contact' && (
           <div className="space-y-4">
-            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">Short Message & Socials</h4>
+            <h4 className="font-serif font-bold text-gray-900 border-b pb-2 text-base">Contact & Socials</h4>
             
             <div>
               <label className="block text-xs font-medium text-gray-600 mb-1">Email</label>
@@ -502,7 +483,7 @@ export default function EditorDrawer({
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Agency / Location</label>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Agency</label>
               <input
                 type="text"
                 value={data.contact.agency}
@@ -520,10 +501,8 @@ export default function EditorDrawer({
 
       </div>
 
-      {/* Drawer Action Footer */}
+      {/* Footer Actions */}
       <div className="p-4 border-t border-gray-200 bg-gray-50 flex flex-col gap-2">
-        
-        {/* Save button */}
         <button
           onClick={handleSave}
           className={`w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white shadow-md transition-all flex items-center justify-center gap-2 ${
@@ -535,22 +514,20 @@ export default function EditorDrawer({
           {saveSuccess ? (
             <>
               <Check className="w-4 h-4 stroke-[3]" />
-              <span>Saved to Browser Successfully!</span>
+              <span>Saved Successfully</span>
             </>
           ) : (
             <>
               <Save className="w-4 h-4" />
-              <span>Save Changes Locally</span>
+              <span>Save Local Changes</span>
             </>
           )}
         </button>
 
-        {/* JSON Export / Import & Reset */}
         <div className="grid grid-cols-3 gap-2 pt-1">
           <button
-            onClick={handleExportJSON}
+            onClick={onExport}
             className="py-2 px-2 text-[11px] font-medium border border-gray-300 hover:bg-gray-100 rounded-lg flex items-center justify-center gap-1 text-gray-700 transition-colors"
-            title="Download JSON configuration"
           >
             <Download className="w-3 h-3 text-gold-600" />
             <span>Export</span>
@@ -565,7 +542,6 @@ export default function EditorDrawer({
           <button
             onClick={onReset}
             className="py-2 px-2 text-[11px] font-medium border border-red-200 text-red-600 hover:bg-red-50 rounded-lg flex items-center justify-center gap-1 transition-colors"
-            title="Reset to default Figma design"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Reset</span>
@@ -574,7 +550,6 @@ export default function EditorDrawer({
 
       </div>
 
-    </div>
+    </aside>
   );
 }
-
