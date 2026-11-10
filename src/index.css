@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  
+  body {
+    background-color: #F6F4F0;
+    color: #1a1614;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom luxury scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1ede4;
+}
+::-webkit-scrollbar-thumb {
+  background: #d5a73e;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c28e2d;
+}
+
+/* Shimmer animation */
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #d5a73e 0%, #e8c374 50%, #b88128 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #dfac4c 0%, #c48e2b 100%);
+}
+
+.gold-pill-gradient {
+  background: linear-gradient(180deg, #d8a846 0%, #ba8429 60%, #99681b 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(213, 167, 62, 0.25);
+}
+
+.glass-card-dark {
+  background: rgba(26, 22, 20, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(213, 167, 62, 0.3);
+}
+
+/* Floating button shine effect */
+.shine-hover {
+  position: relative;
+  overflow: hidden;
+}
+.shine-hover::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: rotate(25deg) translateY(-100%);
+  transition: transform 0.6s ease;
+}
+.shine-hover:hover::after {
+  transform: rotate(25deg) translateY(100%);
+}
+
+/* Editable hover outline in Edit Mode */
+.edit-mode-active .editable-field {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: 1.5px dashed rgba(213, 167, 62, 0.5);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.edit-mode-active .editable-field:hover {
+  outline: 2px solid #c28e2d;
+  background-color: rgba(213, 167, 62, 0.08);
+}
+
+.edit-mode-active .editable-image-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.edit-mode-active .editable-image-container:hover::before {
+  content: '📷 Click to Replace Image';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 30;
+  border-radius: inherit;
+  backdrop-filter: blur(2px);
+  padding: 8px;
+  text-align: center;
+}
+
