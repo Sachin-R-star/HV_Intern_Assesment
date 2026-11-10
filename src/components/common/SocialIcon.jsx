@@ -40,3 +40,4 @@ export default function SocialIcon({ name, className = "w-4 h-4" }) {
       return <Globe className={className} />;
   }
 }
+

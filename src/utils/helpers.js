@@ -48,3 +48,4 @@ export function downloadJson(data, filename = 'portfolio-content.json') {
   document.body.removeChild(anchor);
   URL.revokeObjectURL(url);
 }
+

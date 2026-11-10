@@ -48,3 +48,4 @@ export const CURATED_PRESETS = [
     category: "Portrait"
   }
 ];
+
