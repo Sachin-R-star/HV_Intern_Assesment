@@ -1,5 +1,8 @@
 # Hogari Marai — Haute Couture & Editorial Landing Page
 
+> 🚀 **Live Demo:** [https://hv-intern-assesment.vercel.app/](https://hv-intern-assesment.vercel.app/)  
+> 🎨 **Figma Design:** [EGz _ Spare File Design (Yellow Theme)](https://www.figma.com/design/Jln0DH6rXXDisI72xs56Jc/EGz-_-Spare-File-Design?node-id=6-1196&p=f)
+
 A responsive, content-editable luxury fashion portfolio engineered strictly to the Figma design specification for the **Hogari Marai** persona.
 
 ---
